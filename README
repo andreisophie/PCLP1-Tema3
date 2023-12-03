@@ -1,0 +1,57 @@
+#Copyright Andrei Maruntis 2022, 313CA
+
+Tema 3 Editor de imagini
+
+- STRUCTURA -
+    Programul este impartit in 3 module:
+-   Parser-ul care realizeaza interpretarea comenzilor primite de la tastatura
+-   Editorul de imagini care se ocupa de definirea imginilor (ca structura),
+citirea si scrierea, respectiv editarea lor
+-   Hub-ul, care face legatura intre cele doua module de mai sus
+
+- PARSER -
+
+    Parser-ul prelucreaza stringurile citite de la tastatura si apeleaza
+functiile corespunzatoare din hub.
+    Parser-ul considera ca fiecare comanda apare pe cate o singura linie si o
+prelucreaza asa incat ajunge in formatul "comanda parametru1 parametru2 ...",
+apoi compara string-ul comanda cu diversele comenzi posibile
+(LOAD, SAVE, APPLY, etc) si apeleaza functia corespunzatoare din hub.
+    De precizat ca parser-ul nu valideaza inputurile.
+
+ - HUB -
+
+    * Hub = punct central
+    Functiile din hub au rolul de a verifica inputurile primite de la parser,
+de a apela functiile corespunzatoare din editorul de imagini propriu-zis si
+de a afisa mesaje de succes sau de eroare in fucntie de codul de stare intors
+de functiile care prelucreaza imaginea.
+    Din acest motiv toate functiile din hub sunt foarte similare, urmand in
+mare acesti 3 pasi. In cazul functiilor care se ocupa de scriere/ citire
+hub-ul se ocupa si de deschiderea, respectiv de inchiderea fisierelor.
+
+- EDITORUL DE IMAGINI -
+
+    La randul lui, modulul de editat imagini este impartit in 3 fisiere header:
+-   image.h = definesc structura imaginii si cateva functii esentiale de lucru 
+cu aceasta (in special alocarea si eliberarea memoriei)
+-   imageio.h = contine functiile de scriere si de citire in/din fisiere
+-   imagetools.h = contine functiile de ediare a imaginilor (crop, filtre, etc)
+    De mentionat ca functiile din aceasta categorie intorc de multe ori o
+valoare intreaga care are rolul de a spune hub-ului ce mesaj sa afiseze.
+    In general codurile de rezultat intoarse sunt:
+    * -1 => probleme cu alocarea memoriei
+    * 0 => operatie executata cu succes
+    * 1, 2, ... => diverse erori (zona selectata nu e patrata, coordonate
+invalide, etc.)
+    De multe ori switch-urile care trateaza aceste coduri rezultat au si
+ramura default, dar aceasta nu ar trebui sa fie accesata niciodata in modul
+normal.
+
+- ALTE PRECIZARI -
+
+    * La lucrul cu fisierele folosesc modul binar indiferent de tipul de
+scriere/ citire care trebuie facut, intrucat modul binar include modul
+text
+    * Programul este eficient din punctul de vedere al memoriei, deoarece aloc
+o singura matrice de pixeli la imaginile alb-negru si 3 numai pentru color
